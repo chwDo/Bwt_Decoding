@@ -1,0 +1,38 @@
+#!/bin/bash
+#set -x #echo on
+
+make
+
+rm -f tiny.idx
+for ((i=1;i<8;++i))
+do
+    rm -f search$i.ans
+done
+
+
+if [ -f bwtsearch ] ; then
+
+  echo "Running bwtsearch on tiny.bwt..."
+
+  ./bwtsearch -m ~cs9319/a2/tiny.bwt ./tiny.idx "ana" > search1.ans
+  ./bwtsearch -n ~cs9319/a2/tiny.bwt ./tiny.idx "ana" > search2.ans
+  ./bwtsearch ~cs9319/a2/tiny.bwt ./tiny.idx "ana" > search3.ans
+  ./bwtsearch -m ~cs9319/a2/tiny.bwt ./tiny.idx "erry" > search4.ans
+  ./bwtsearch -n ~cs9319/a2/tiny.bwt ./tiny.idx "erry" > search5.ans
+  ./bwtsearch ~cs9319/a2/tiny.bwt ./tiny.idx "erry" > search6.ans
+  ./bwtsearch -o ~cs9319/a2/tiny.bwt ./tiny.idx search7.ans
+
+for ((i=1;i<8;++i))
+do
+  touch search$i.ans
+  correct=`eval diff -q ~cs9319/a2/ANS/search$i.ans search$i.ans`
+  if [ -z "$correct" ]; then
+    echo "Search $i passed"
+  else
+    echo "Search $i failed"
+  fi
+done
+
+else
+  echo "bwtsearch: command does not exist"
+fi
